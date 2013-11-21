@@ -22,18 +22,10 @@ module.exports = function(grunt) {
             '<%= grunt.template.today("ddd, dd mmm yyyy HH:MM:ss Z") %>'
             ].join(' | ') + ' */',
 
-        clean: {
-            dev: [
-                '<%= working_base_folder %>*.js',
-                '<%= working_base_folder %>*.css',
-            ],
-
-        },
-
         csslint: {
             dev: {
                 src: [
-                    '<%= working_base_folder %>*.css',
+                    '<%= working_base_folder %>/style.css',
                 ],
                 strict: {
                     options: {
@@ -64,12 +56,11 @@ module.exports = function(grunt) {
             },
             scripts: {
                 files: [
-                    '<%= working_base_folder %>*.js',
-                    '<%= working_base_folder %>*.css',
+                    '<%= working_base_folder %>/jsdebugger.js',
+                    '<%= working_base_folder %>/style.css',
                 ],
                 tasks: [
-                    'csslint:dev',
-                    'jshint:beforeconcat',
+                    'default',
                 ],
             },
         },
@@ -79,15 +70,23 @@ module.exports = function(grunt) {
             options: {
                 camelcase: true,
                 forin: true,
+                curly: true,
+                eqeqeq: false,
+                eqnull: false,
+                camelcase: true,
+                forin: false,
                 undef: true,
                 globals: {
                     jQuery: true,
                     '$': true,
                     "JSConsole": true,
+                    "window" :true ,
+                    "error" : true,
+                    "document" : true,
                 },
             },
             beforeconcat: [
-                '<%= working_base_folder %>*.js',
+                '<%= working_base_folder %>/jsdebugger.js',
             ],
 
         },
@@ -135,7 +134,6 @@ module.exports = function(grunt) {
     // Default task
     grunt.registerTask('default', 'runs my tasks', function () {
         var tasks = [
-            'clean:dev',
             'jshint:beforeconcat',
             'csslint:dev',
         ];
@@ -148,9 +146,8 @@ module.exports = function(grunt) {
     grunt.registerTask('start', [
         'default',
         'open:dev',
-        // 'configureProxies',
         'connect:dev',
-        'watch',
+        //'watch',
     ]);
 
 };

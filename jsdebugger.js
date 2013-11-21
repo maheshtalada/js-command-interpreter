@@ -278,7 +278,7 @@
             cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text()),
             len = this.properties.length;
             // if user pressed Right Arrow & END key , fill with property text
-            if( cmdTxt.length !== 0 && (key == 35 || key == 39)) {
+            if( cmdTxt.length !== 0 && (key === 35 || key === 39)) {
                 // collect text from suggest node & append text to main area
                 // TODO : cache the 'suggest' node
                 // TODO : document below query , others to understand
@@ -295,11 +295,11 @@
                 this.propCounter=0;
             }
             // if user pressed UP or BOTTOM , autopopulate back & forth
-            else if( len > 1 && (key == 38 || key == 40) ){
+            else if( len > 1 && (key === 38 || key === 40) ){
                 //TODO : clean up below code & check this logic with larger data set
-                this.propCounter = (key == 40 ) ? this.propCounter=this.propCounter+1 : ((key == 38 ) ?
+                this.propCounter = (key === 40 ) ? this.propCounter=this.propCounter+1 : ((key === 38 ) ?
                                     this.propCounter=this.propCounter-1: this.propCounter) ;
-                this.propCounter = (this.propCounter == len ) ? 0 : ((this.propCounter == -1) ?
+                this.propCounter = (this.propCounter === len ) ? 0 : ((this.propCounter === -1) ?
                                     this.propCounter=len-1 : this.propCounter) ;
                 this.$propList.find('li')
                               .css('background-color','')
@@ -325,7 +325,7 @@
          * print executed code & output
          */
         Scriptdebugger.prototype.printOutput = function(){
-            var opt = JSConsole.Utils.prototype.appendItems.apply(this , ['li','properties',this.updateClass])
+            var opt = JSConsole.Utils.prototype.appendItems.apply(this , ['li','properties',this.updateClass]);
             this.$output.prepend(opt);
             //update classes for appended li
             this.$output.find('li').eq(this.properties.length-1).addClass('last');
