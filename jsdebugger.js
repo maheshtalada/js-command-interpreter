@@ -278,7 +278,10 @@
             cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text()),
             len = this.properties.length;
             // if user pressed Right Arrow & END key , fill with property text
-            if( cmdTxt.length !== 0 && (key === 35 || key === 39)) {
+            if( cmdTxt.length === '' && (key === 38 || key === 40)) {
+
+            }
+            else if( cmdTxt.length !== 0 && (key === 35 || key === 39)) {
                 // collect text from suggest node & append text to main area
                 // TODO : cache the 'suggest' node
                 // TODO : document below query , others to understand
