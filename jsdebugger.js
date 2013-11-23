@@ -26,26 +26,27 @@
                 }
             });
         };
-    })();
 
-    $.fn.addScroll = function( $ele , height ) {
-        height = height - 100;
-        if ($ele.height() > height ) {
-            $ele.css ({
-                'height' :  height +'px',
-                'overflow-y' : 'auto',
-                'width' : this.width() + 20,
-            })
-        }else {
-            $ele.css ({
-                'height' :  'auto',
-                'width' : 'auto',
-            })
+        $.fn.addScroll = function( $ele , height ) {
+            height = height - 100;
+            if ($ele.height() > height ) {
+                $ele.css ({
+                    'height' :  height +'px',
+                    'overflow-y' : 'auto',
+                    'width' : this.width() + 20,
+                })
+            }else {
+                $ele.css ({
+                    'height' :  'auto',
+                    'width' : 'auto',
+                })
+            }
+
         }
 
-    }
-    ////////////////////////// End of Custom Funtions /////////////////////////
+    })();
 
+    ////////////////////////// End of Custom Funtions /////////////////////////
 
     JSConsole.Utils = (function(){
 
@@ -87,20 +88,23 @@
 
     JSConsole.Historystore = (function(){
 
-        function Historystore(){}
+        function Historystore(){
+            this.history = this.getHistory();
+            this.historyLen = this.history.length;
+        }
 
         Historystore.prototype.setHistory = function(){
-            Session
+            sessionStorage.setItem('history',JSON.stringify(this.history));
+            this.historyLen = this.history.length;
         };
 
         Historystore.prototype.getHistory = function(){
-
+            return JSON.parse(sessionStorage.getItem('history')) || [""];
         };
 
         Historystore.prototype.showHistory = function(){
-
+            return this.getHistory().join('\n');
         };
-
 
         return Historystore;
 
@@ -113,21 +117,31 @@
 
         function Executecommand(){
             this.customCommands = {
-                history : this.showHistory
+                history : function(){
+                    return JSConsole.Historystore.prototype.showHistory.call(this);
+                }
             };
         }
 
-        Executecommand.prototype.sendCommand = function(){
-            this.cmd = this.$commandTxt.text();
+        Executecommand.prototype.sendCommand = function( cmd ){
+            //check for any predefined commands
             this.properties=[];
-            this.properties.push('>> '+this.cmd);
-            this.executeCommand();
+            if(cmd.substr(0,1) == ':'){
+                if(this.customCommands.hasOwnProperty(cmd.substr(1))){
+                    this.properties.push(this.customCommands[cmd.substr(1)].call(this));
+                    return;
+                }
+            }
+            this.history.push(cmd);
+            this.setHistory();
+            this.properties.push('>> '+cmd);
+            this.executeCommand(cmd);
             this.updateClass='';
         };
 
-        Executecommand.prototype.executeCommand = function(){
+        Executecommand.prototype.executeCommand = function( cmd ){
             try{
-                var opt = this.helperFrame.eval(this.cmd);
+                var opt = this.helperFrame.eval(cmd);
                 this.updateClass = 'success';
             } catch (e){
                 var opt = e.message;
@@ -264,10 +278,8 @@
             };
 
             // update css for the consoleWrapper
-            this.$console.css({
-                'height' : this.wHeight - 40
-            });
-            $('.rightpane').css('height',this.wHeight);
+            this.$console.css( 'height', this.wHeight - 40 );
+            $('.rightpane').css( 'height', this.wHeight );
 
             // cache the props for later use
             this.getSuggestions( 'window' );
@@ -295,11 +307,8 @@
             var key = JSConsole.Utils.prototype.findKey.call('', e ),
             cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text()),
             len = this.properties.length;
-            // if user pressed Right Arrow & END key , fill with property text
-            if( cmdTxt.length === '' && (key === 38 || key === 40)) {
 
-            }
-            else if( cmdTxt.length !== 0 && (key === 35 || key === 39)) {
+            if( cmdTxt.length !== 0 && len > 1 && (key === 35 || key === 39)) {
                 // collect text from suggest node & append text to main area
                 // TODO : cache the 'suggest' node
                 // TODO : document below query , others to understand
@@ -318,8 +327,7 @@
             // if user pressed UP or BOTTOM , autopopulate back & forth
             else if( len > 1 && (key === 38 || key === 40) ){
                 //TODO : clean up below code & check this logic with larger data set
-                this.propCounter = (key === 40 ) ? this.propCounter=this.propCounter+1 : ((key === 38 ) ?
-                                    this.propCounter=this.propCounter-1: this.propCounter) ;
+                this.propCounter = this.counterPos( key );
                 this.propCounter = (this.propCounter === len ) ? 0 : ((this.propCounter === -1) ?
                                     this.propCounter=len-1 : this.propCounter) ;
                 this.$propList.find('li')
@@ -330,16 +338,39 @@
                 this.appendProperty();
                 e.preventDefault();
             }
+            // if user pressed UP & BOTTOM key , traverse history if any
+            else if( this.history.length > 0  && (key === 38 || key === 40)) {
+                console.log(this.history);
+                if(key == 38 && this.historyLen > 0) {
+                    this.propCounter = --this.historyLen;
+                } else if( key == 40 && this.historyLen < this.history.length-1) {
+                    this.propCounter = ++this.historyLen;
+                }
+                //console.log(this.propCounter);
+                this.$commandTxt
+                    .text(this.history[this.propCounter])
+                    .setCaret()
+                ;
+            }
             // if user press ENTER + SHIFT , let it go to next line for multiline code
             else if(key == 13 && e.shiftKey === true){} // TODO : add some defensive code
             // if user press ENTER , submit command to execute
             else if(key == 13 && cmdTxt.length !== 0){
-                this.sendCommand();
+                this.sendCommand(cmdTxt);
                 // empty command text , set cursor position
                 this.$commandTxt.text('').focus();
                 this.printOutput();
+                this.propCounter=0;
                 e.preventDefault();
             }
+        };
+
+        /**
+         * return the counterPostion for UP & BOTTOM key press
+         */
+        Scriptdebugger.prototype.counterPos = function( key ) {
+            return  (key === 40 ) ? this.propCounter=this.propCounter+1 : ((key === 38 ) ?
+                                    this.propCounter=this.propCounter-1: this.propCounter) ;
         };
 
         /**
@@ -390,7 +421,7 @@
                     .find('li')
                     .eq(this.propCounter)
                     .css('background-color','#ccc')
-                    .addScroll( this.$propListWrapper, this.wHeight );
+                    .addScroll( this.$propListWrapper, this.wHeight )
                 ;
 
             }
