@@ -414,6 +414,8 @@
                         props.push(this.cacheProp[Obj][i]);
                     }
                 }
+            }else{
+                props = this.cacheProp[Obj];
             }
             return props;
         };
