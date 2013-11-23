@@ -28,11 +28,11 @@
         };
     })();
 
-    $.fn.addScroll = function($ele) {
-        var height = $(window).height();
-        if ($ele.height() > (height - 100)) {
+    $.fn.addScroll = function( $ele , height ) {
+        height = height - 100;
+        if ($ele.height() > height ) {
             $ele.css ({
-                'height' :  (height - 100)+'px',
+                'height' :  height +'px',
                 'overflow-y' : 'auto',
                 'width' : this.width() + 20,
             })
@@ -237,6 +237,7 @@
             this.$propListWrapper = $('#PropWrapper');
             this.$propList = $('#PropList');
             this.rejectKey = [35,38,39,40]; // rejeck key stroke onkeyup , if need more keep on add
+            this.wHeight = $(window).height();
             // TODO : make it configurable way
             //cached helper iframe  window object
             this.helperFrame = document.getElementById("helperframe").contentWindow || document.getElementById("helperframe").contentDocument;
@@ -264,9 +265,9 @@
 
             // update css for the consoleWrapper
             this.$console.css({
-                'height' : $(window).height() - 40
+                'height' : this.wHeight - 40
             });
-            $('.rightpane').css('height',$(window).height());
+            $('.rightpane').css('height',this.wHeight);
 
             // cache the props for later use
             this.getSuggestions( 'window' );
@@ -389,7 +390,7 @@
                     .find('li')
                     .eq(this.propCounter)
                     .css('background-color','#ccc')
-                    .addScroll(this.$propListWrapper);
+                    .addScroll( this.$propListWrapper, this.wHeight );
                 ;
 
             }
