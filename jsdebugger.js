@@ -27,6 +27,23 @@
             });
         };
     })();
+
+    $.fn.addScroll = function($ele) {
+        var height = $(window).height();
+        if ($ele.height() > (height - 100)) {
+            $ele.css ({
+                'height' :  (height - 100)+'px',
+                'overflow-y' : 'auto',
+                'width' : this.width() + 20,
+            })
+        }else {
+            $ele.css ({
+                'height' :  'auto',
+                'width' : 'auto',
+            })
+        }
+
+    }
     ////////////////////////// End of Custom Funtions /////////////////////////
 
 
@@ -73,7 +90,7 @@
         function Historystore(){}
 
         Historystore.prototype.setHistory = function(){
-
+            Session
         };
 
         Historystore.prototype.getHistory = function(){
@@ -368,9 +385,12 @@
                 this.appendProperty();
                 if(this.properties.length > 1)
                 this.$propList.html(JSConsole.Utils.prototype.appendItems.apply(this , ['li','properties','']));
-                this.$propList.find('li')
-                              .eq(this.propCounter)
-                              .css('background-color','#ccc');
+                this.$propListWrapper
+                    .find('li')
+                    .eq(this.propCounter)
+                    .css('background-color','#ccc')
+                    .addScroll(this.$propListWrapper);
+                ;
 
             }
         };
