@@ -10,9 +10,9 @@ jsdebugger
 </ul>
 <h4>TODO in ma plate</h4>
 <ol>
-<li>Pull History</li>
-<li>UP & DOWN arrow keys for History traversal</li>
-<li>Movable Cursor (back & forth) for multiline code</li>
+<li>Pull History -  Done</li>
+<li>UP & DOWN arrow keys for History traversal - Done</li>
+<li>Movable Cursor (back & forth) for multiline code -Done</li>
 <li>Prettify the output</li>
 <li>Autopopulate for multiline code</li>
 <li>Update code with TODO comments</li>
