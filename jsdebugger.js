@@ -41,7 +41,6 @@
                     'width' : 'auto',
                 })
             }
-
         }
 
     })();
@@ -86,6 +85,8 @@
 
     })();
 
+    // History only scoped to the browser tab, if we close the tab history will expaire
+    // if we need history evev after reopend the tab then move to localstorage from session storage
     JSConsole.Historystore = (function(){
 
         function Historystore(){
@@ -340,7 +341,6 @@
             }
             // if user pressed UP & BOTTOM key , traverse history if any
             else if( this.history.length > 0  && (key === 38 || key === 40)) {
-                console.log(this.history);
                 if(key == 38 && this.historyLen > 0) {
                     this.propCounter = --this.historyLen;
                 } else if( key == 40 && this.historyLen < this.history.length-1) {
