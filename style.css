@@ -26,4 +26,5 @@ span { outline: none;}
 .help ul {list-style: disc outside none;margin-bottom: 10px;padding-left: 6%; }
 .help h2 {font: bold 19px arial;padding: 10px 0;}
 .help li { font-size: 90%;}
+code{margin: 0 2px;padding: 0px 5px;border: 1px solid #ddd;background-color: #f8f8f8;border-radius: 3px;}
 
