@@ -104,7 +104,11 @@
         };
 
         Historystore.prototype.showHistory = function(){
-            return this.getHistory().join('\n');
+            return this.getHistory().join('<br/>');
+        };
+
+        Historystore.prototype.clearHistory = function(){
+            sessionStorage.removeItem('history');
         };
 
         return Historystore;
@@ -120,6 +124,9 @@
             this.customCommands = {
                 history : function(){
                     return JSConsole.Historystore.prototype.showHistory.call(this);
+                },
+                clear : function(){
+                    JSConsole.Historystore.prototype.clearHistory.call(this);
                 }
             };
         }
@@ -128,6 +135,7 @@
             //check for any predefined commands
             this.properties=[];
             if(cmd.substr(0,1) == ':'){
+                this.properties.push('>> '+cmd);
                 if(this.customCommands.hasOwnProperty(cmd.substr(1))){
                     this.properties.push(this.customCommands[cmd.substr(1)].call(this));
                     return;
