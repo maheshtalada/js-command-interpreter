@@ -18,8 +18,8 @@ form { font: 15px arial}
 #command .autopop { color: #999999;}
 #PropWrapper {position: absolute;border: 1px solid #999999;border-radius: 4px;background-color: #fff;}
 #console { width: 100%;overflow-y:auto }
-.info { color : green}
-.output { color: red}
+#output li span.info { color : green;font-weight: bold}
+#output li { color: blue}
 ol { padding-left: 8%;}
 .help{ padding-left:5%;}
 span { outline: none;}

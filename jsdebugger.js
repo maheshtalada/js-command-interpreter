@@ -85,8 +85,8 @@
 
     })();
 
-    // History only scoped to the browser tab, if we close the tab history will expaire
-    // if we need history evev after reopend the tab then move to localstorage from session storage
+    // History scoped to the browser tab, if we close the tab history will expaire
+    // if we need history to be alive even after reopend the tab then move to localStorage
     JSConsole.Historystore = (function(){
 
         function Historystore(){
@@ -115,7 +115,6 @@
 
     })();
 
-
     JSConsole.Executecommand = (function(){
 
         Executecommand.prototype = new JSConsole.Historystore();
@@ -134,8 +133,8 @@
         Executecommand.prototype.sendCommand = function( cmd ){
             //check for any predefined commands
             this.properties=[];
+            this.properties.push('<span class="info">>>'+cmd+'</span>');
             if(cmd.substr(0,1) == ':'){
-                this.properties.push('>> '+cmd);
                 if(this.customCommands.hasOwnProperty(cmd.substr(1))){
                     this.properties.push(this.customCommands[cmd.substr(1)].call(this));
                     return;
@@ -143,7 +142,6 @@
             }
             this.history.push(cmd);
             this.setHistory();
-            this.properties.push('>> '+cmd);
             this.executeCommand(cmd);
             this.updateClass='';
         };
@@ -222,7 +220,7 @@
             }else if (simple === undefined) {
                 visited.push(o);
 
-                json = type + '{\n';
+                json = type + '{<br/>';
                 for (i in o) {
                     names.push(i);
                 }
@@ -230,7 +228,7 @@
                 for (i = 0; i < names.length; i++) {
                     parts.push(names[i] + ': ' + this.stringify(o[names[i]], true, visited));
                 }
-                json += parts.join(',\n') + '\n}';
+                json += parts.join(',<br/>') + '<br/>}';
             }else {
                 try {
                     json = o+''; // should look like an object
@@ -283,7 +281,6 @@
                 for (; i < l; i++) {
                     _this.properties.push(_this.stringify(arguments[i]));
                 }
-
             };
 
             // update css for the consoleWrapper
@@ -316,8 +313,9 @@
             var key = JSConsole.Utils.prototype.findKey.call('', e ),
             cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text()),
             len = this.properties.length;
+            console.log(cmdTxt.length, len);
 
-            if( cmdTxt.length !== 0 && len > 1 && (key === 35 || key === 39)) {
+            if( cmdTxt.length > 0 && len > 0 && (key === 35 || key === 39)) {
                 // collect text from suggest node & append text to main area
                 // TODO : cache the 'suggest' node
                 // TODO : document below query , others to understand
@@ -330,6 +328,11 @@
                     })
                     .setCaret()
                 ;
+                this.$propListWrapper.css({
+                    'height':'auto',
+                    'width' : 'auto',
+                    });
+
                 this.removeSuggestions();
                 this.propCounter=0;
             }
@@ -398,7 +401,7 @@
         Scriptdebugger.prototype.autoPopulate = function( e ){
 
             //e.preventDefault();
-            // TODO : way i calling mehtods looks ugly , make it simple
+            // TODO : way i calling mehtods looks ugly & lengthy , make it simple
             var key = JSConsole.Utils.prototype.findKey.call('', e ),
             cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text());
 
