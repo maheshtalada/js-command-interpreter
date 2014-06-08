@@ -13,7 +13,7 @@ ul { list-style : none;}
 form ul li {  white-space: pre-wrap; }
 .last { border-bottom: 1px solid peachpuff;padding-bottom: 5px;}
 form { font: 15px arial}
-#command { height:auto;line-height:28px;min-height: 30px ; border: 1px solid appworkspace;display: inline-block;width: 100%;cursor: text;}
+#command { height:auto;line-height:28px;min-height: 30px ; border: 1px solid burlywood;display: inline-block;width: 100%;cursor: text;}
 #commandtxt {cursor: text;}
 #command .autopop { color: #999999;}
 #PropWrapper {position: absolute;border: 1px solid #999999;border-radius: 4px;background-color: #fff;}
