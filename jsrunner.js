@@ -157,7 +157,7 @@
             this.properties.push(this.stringify(opt));
         };
 
-        //////////// below function definition/code  taken from the JSRunner ////////////
+        //////////// below function definition/code  taken from the JSConsole ////////////
         //TODO : cleanup &  document code flow for others to understand
         Executecommand.prototype.stringify = function(o, simple, visited){
             var json = '', i, vi, type = '', parts = [], names = [], circular = false;
