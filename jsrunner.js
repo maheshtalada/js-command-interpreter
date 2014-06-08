@@ -1,8 +1,8 @@
 /**
- *  jshint options  - JSConsole , jQuery , $ , forin
+ *  jshint options  - JSRunner , jQuery , $ , forin
  */
 
-;(function( JSConsole , $ ){
+;(function( JSRunner , $ ){
     'use strict';
 
     ///////////////  Adding Custom Functions into jQuery name space ////////////////
@@ -47,7 +47,7 @@
 
     ////////////////////////// End of Custom Funtions /////////////////////////
 
-    JSConsole.Utils = (function(){
+    JSRunner.Utils = (function(){
 
         function Utils(){}
 
@@ -87,7 +87,7 @@
 
     // History scoped to the browser tab, if we close the tab history will expaire
     // if we need history to be alive even after reopend the tab then move to localStorage
-    JSConsole.Historystore = (function(){
+    JSRunner.Historystore = (function(){
 
         function Historystore(){
             this.history = this.getHistory();
@@ -115,17 +115,17 @@
 
     })();
 
-    JSConsole.Executecommand = (function(){
+    JSRunner.Executecommand = (function(){
 
-        Executecommand.prototype = new JSConsole.Historystore();
+        Executecommand.prototype = new JSRunner.Historystore();
 
         function Executecommand(){
             this.customCommands = {
                 history : function(){
-                    return JSConsole.Historystore.prototype.showHistory.call(this);
+                    return JSRunner.Historystore.prototype.showHistory.call(this);
                 },
                 clear : function(){
-                    JSConsole.Historystore.prototype.clearHistory.call(this);
+                    JSRunner.Historystore.prototype.clearHistory.call(this);
                 }
             };
         }
@@ -157,7 +157,7 @@
             this.properties.push(this.stringify(opt));
         };
 
-        //////////// below function definition/code  taken from the JSconsole ////////////
+        //////////// below function definition/code  taken from the JSRunner ////////////
         //TODO : cleanup &  document code flow for others to understand
         Executecommand.prototype.stringify = function(o, simple, visited){
             var json = '', i, vi, type = '', parts = [], names = [], circular = false;
@@ -242,11 +242,11 @@
     })();
 
 
-    JSConsole.Scriptdebugger = (function(){
+    JSRunner.Scriptrunner = (function(){
 
-        Scriptdebugger.prototype = new JSConsole.Executecommand();
+        Scriptrunner.prototype = new JSRunner.Executecommand();
 
-        function Scriptdebugger(){
+        function Scriptrunner(){
             // cached jQuery elements
             this.$command = $(arguments[0]);
             this.$commandTxt = $('#commandtxt');
@@ -265,7 +265,7 @@
             // collect the window object from iframe not from top window
         }
 
-        Scriptdebugger.prototype.init = function(){
+        Scriptrunner.prototype.init = function(){
             var _this=this;
             this.$commandTxt.focus();
             // overwrite the helperFrame console - log & dir.. , otherwise command will execute in borwser console
@@ -293,7 +293,7 @@
         };
 
         // register all events below , so that easiar to maintain all the listenrs
-        Scriptdebugger.prototype.events = function(){
+        Scriptrunner.prototype.events = function(){
             // event listener when user types in
             this.$command.on({
                 keyup : $.proxy(this.autoPopulate , this) ,
@@ -309,9 +309,9 @@
          * handle keystokes pressed in
          * @param { Event } - e
          */
-        Scriptdebugger.prototype.handleKeyStroke = function( e ){
-            var key = JSConsole.Utils.prototype.findKey.call('', e ),
-            cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text()),
+        Scriptrunner.prototype.handleKeyStroke = function( e ){
+            var key = JSRunner.Utils.prototype.findKey.call('', e ),
+            cmdTxt =  JSRunner.Utils.prototype.trim.call('',$(e.currentTarget).text()),
             len = this.properties.length;
             console.log(cmdTxt.length, len);
 
@@ -379,7 +379,7 @@
         /**
          * return the counterPostion for UP & BOTTOM key press
          */
-        Scriptdebugger.prototype.counterPos = function( key ) {
+        Scriptrunner.prototype.counterPos = function( key ) {
             return  (key === 40 ) ? this.propCounter=this.propCounter+1 : ((key === 38 ) ?
                                     this.propCounter=this.propCounter-1: this.propCounter) ;
         };
@@ -387,8 +387,8 @@
         /**
          * print executed code & output
          */
-        Scriptdebugger.prototype.printOutput = function(){
-            var opt = JSConsole.Utils.prototype.appendItems.apply(this , ['li','properties',this.updateClass]);
+        Scriptrunner.prototype.printOutput = function(){
+            var opt = JSRunner.Utils.prototype.appendItems.apply(this , ['li','properties',this.updateClass]);
             this.$output.prepend(opt);
             //update classes for appended li
             this.$output.find('li').eq(this.properties.length-1).addClass('last');
@@ -398,12 +398,12 @@
          * auto populate properties based on input
          * @param { Event } - e
          */
-        Scriptdebugger.prototype.autoPopulate = function( e ){
+        Scriptrunner.prototype.autoPopulate = function( e ){
 
             //e.preventDefault();
             // TODO : way i calling mehtods looks ugly & lengthy , make it simple
-            var key = JSConsole.Utils.prototype.findKey.call('', e ),
-            cmdTxt =  JSConsole.Utils.prototype.trim.call('',$(e.currentTarget).text());
+            var key = JSRunner.Utils.prototype.findKey.call('', e ),
+            cmdTxt =  JSRunner.Utils.prototype.trim.call('',$(e.currentTarget).text());
 
             // Do early exit if there is no text typed in or pressed any of rejected Key set
             if(this.rejectKey.indexOf(key) !== -1 ) return;
@@ -427,7 +427,7 @@
                 // always append the first property
                 this.appendProperty();
                 if(this.properties.length > 1)
-                this.$propList.html(JSConsole.Utils.prototype.appendItems.apply(this , ['li','properties','']));
+                this.$propList.html(JSRunner.Utils.prototype.appendItems.apply(this , ['li','properties','']));
                 this.$propListWrapper
                     .find('li')
                     .eq(this.propCounter)
@@ -442,7 +442,7 @@
          * Append property text to main command leaving needle text
          * also if user keydown non-printable keys - UP, BOTTOM
          */
-        Scriptdebugger.prototype.appendProperty = function(){
+        Scriptrunner.prototype.appendProperty = function(){
             this.$command.append($("<span>")
                                     .addClass("autopop")
                                     .text(this.properties[this.propCounter].slice(this.needlen,this.properties[this.propCounter].length))
@@ -455,7 +455,7 @@
          * @param { String } needle - string to filter already pulled props
          * @return { Array } props - properties
          */
-        Scriptdebugger.prototype.getSuggestions = function( Obj , needle ){
+        Scriptrunner.prototype.getSuggestions = function( Obj , needle ){
             // check properties cached or not , if not have it cached for later use
             //console.log(Obj, needle);
             var props = [];
@@ -483,16 +483,16 @@
             return props;
         };
 
-        Scriptdebugger.prototype.removeSuggestions = function() {
+        Scriptrunner.prototype.removeSuggestions = function() {
             //TODO : shoud be removed directly, don't find then remove
             this.$command.find('.autopop').remove();
             //reset populated list , just insert empty don't remove items
             this.$propList.html('');
         };
 
-        return Scriptdebugger;
+        return Scriptrunner;
     })();
 
-})( window.JSConsole = window.JSConsole || {} , jQuery );
+})( window.JSRunner = window.JSRunner || {} , jQuery );
 
-new JSConsole.Scriptdebugger('#command').init();
+new JSRunner.Scriptrunner('#command').init();
