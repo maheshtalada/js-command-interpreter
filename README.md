@@ -1,5 +1,16 @@
 JS Command Interpreter
 ======================
+           \|||/
+	         (o o)
+	+~~~~ooO~~(_)~~~~~~~~+
+	| Hi                 |
+	|   Just A           |
+	|     Experiment     |
+	+~~~~~~~~~~~~~~Ooo~~~+
+	        |__|__|
+	         || ||
+	        ooO Ooo
+
 <h4>How to use</h4>
 <ul>
 <li>Type Command to execute in the box showing top left panel</li>
